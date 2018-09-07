@@ -44,6 +44,9 @@ class IntervalQueue {
     }
 
     Queue(callback, ms, { awaitable = false } = {}) {
+        if (this.abort) {
+            this.abort = false;
+        }
         this.queue.push({ callback, ms, awaitable });
         let lock = this.free.pop();
         if (lock) {
@@ -60,6 +63,7 @@ class IntervalQueue {
         this.abort = true;
         clearTimeout(this.id);
         this.queue = [];
+        this.free = [1];
         //console.log(`Elapsed Cancel ms: ${new Date().getTime() - begining}`);
     }
 }
